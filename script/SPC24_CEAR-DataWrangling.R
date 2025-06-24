@@ -5,6 +5,7 @@ library(dplyr)
 library(lubridate)
 
 load("/Users/mayaotsu/Downloads/ALL_REA_FISH_RAW.rdata")
+load("/Users/Kisei.Tanaka/fish-paste/data/ALL_REA_FISH_RAW.rdata")
 select=dplyr::select
 colnames(df)
 
@@ -43,7 +44,14 @@ df = df %>%
 
 df$presence = ifelse(df$density>0,1,0)
 df$species <- "CEAR"
-boxplot(df$presence[df$species=='CEAR' & (df$year>2009)] ~ df$year[df$species=='CEAR'& (df$year>2009)])
+
+df %>% 
+  filter(region %in% c("MHI", "NWHI")) %>% 
+  filter(species == "CEAR") %>% 
+  filter(method == "nSPC") %>% 
+  ggplot(aes(longitude, latitude, fill = as.factor(presence))) + 
+  geom_point(shape = 21, size = 5, alpha = 0.8) + 
+  facet_wrap(~year)
 
 #filter out for only CEAR, islands, and spc in method
 df <- df %>%
